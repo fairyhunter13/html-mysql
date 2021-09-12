@@ -1,0 +1,26 @@
+version: '3'
+services:
+    mysql:
+        image: mysql
+        environment:
+            MYSQL_DATABASE: test
+            MYSQL_ROOT_PASSWORD: testing
+        restart: always
+        ports:
+            - "6033:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+    app:
+        build:
+            context: ./
+        environment:
+            MYSQL_URI: root:testing@tcp(mysql:3306)/test
+        depends_on:
+            - mysql
+        restart: always
+        ports:
+            - "8081:80"
+        volumes:
+            - "./staticdir:/app/staticdir"
+volumes:
+    mysql_data:
